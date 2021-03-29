@@ -6,6 +6,10 @@ import pymunk.pygame_util
 import time
 import random
 import math
+import os
+os.chdir(os.path.dirname(sys.argv[0]))
+
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()   
@@ -252,10 +256,10 @@ def main():
     score_font = pygame.font.Font(None, 100)
 
     #screen.fill((0,0,0))
-    bg_image = pygame.image.load('/Users/mac/Desktop/pythonlearning/pikaball/bg.jpeg').convert()
+    bg_image = pygame.image.load('bg.jpeg').convert()
     bg_image = pygame.transform.scale(bg_image,(SCREENWIDTH,SCREENHEIGHT))
 
-    net = pygame.image.load('/Users/mac/Desktop/pythonlearning/pikaball/net.jpeg').convert()
+    net = pygame.image.load('net.jpeg').convert()
     net = pygame.transform.scale(net,(NETWIDTH,NETHEIGHT))
 
     screen.blit(bg_image,(0,0))
@@ -265,7 +269,7 @@ def main():
     ball = Player()
     ball.setsurf(BALLRADIUS,BALLRADIUS)
     ball.setrect((SCREENWIDTH / 2,0))
-    ball.add_image_ball('/Users/mac/Desktop/pythonlearning/pikaball/ball.png')
+    ball.add_image_ball('ball.png')
     
 
     player_left = Player()
@@ -277,8 +281,8 @@ def main():
     player_left.setrect((PIKAWIDTH / 2 , SCREENHEIGHT - PIKAHEIGHT / 2))
     player_right.setrect((SCREENWIDTH - PIKAWIDTH / 2 , SCREENHEIGHT - PIKAHEIGHT / 2))
 
-    player_left.add_image('/Users/mac/Desktop/pythonlearning/pikaball/leftpika.png')
-    player_right.add_image('/Users/mac/Desktop/pythonlearning/pikaball/rightpika.png')
+    player_left.add_image('leftpika.png')
+    player_right.add_image('rightpika.png')
 
     #player_left.rect.move_ip((100,100))
 
