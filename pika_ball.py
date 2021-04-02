@@ -1,3 +1,6 @@
+'''
+very simple pikaball clone
+'''
 import pygame
 import sys
 from pygame.locals import *
@@ -7,49 +10,51 @@ import time
 import random
 import math
 import os
-os.chdir(os.path.dirname(sys.argv[0]))
-
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()   
-        #self.surf = pygame.Surface((PIKAWIDTH,PIKAHEIGHT))
         self.v = 0
+
     def setsurf(self,*size):
         self.surf = pygame.Surface(size)
+
     def setrect(self,position):
         self.rect = self.surf.get_rect(center = position)
-    def add_image_ball(self,directory):
+
+    def add_image_ball(self,directory):#add image method for ball
         self.image = pygame.image.load(directory).convert_alpha()
         self.image = pygame.transform.scale(self.image,(BALLRADIUS,BALLRADIUS))
+
     def add_image(self,directory):
         self.image = pygame.image.load(directory).convert_alpha()
         self.image = pygame.transform.scale(self.image,(PIKAWIDTH,PIKAHEIGHT))
-    #def set_rect(self,position):
-    #    self.rect.move(position)
+
     def draw(self,surface):
         surface.blit(self.image,self.rect)
 
-    def move(self):
-        if pygame.key.get_pressed()[K_RIGHT]:
+    def move(self):#move using arrow key
+        if pygame.key.get_pressed()[K_RIGHT]:#right is pressed
             if self.rect.x < SCREENWIDTH - PIKAWIDTH:
                 self.rect.move_ip(HORIZONTAL_SPEED,0)
-        if pygame.key.get_pressed()[K_LEFT]:
+        if pygame.key.get_pressed()[K_LEFT]:#left is pressed
             if self.rect.x > SCREENWIDTH / 2 + NETWIDTH / 2:
                 self.rect.move_ip(-HORIZONTAL_SPEED,0)
-    def movewasd(self):
+
+    def movewasd(self):#move using wasd
         if pygame.key.get_pressed()[K_a]:
             if self.rect.x > 0:
                 self.rect.move_ip(-HORIZONTAL_SPEED,0)
         if pygame.key.get_pressed()[K_d]:
             if self.rect.x < SCREENWIDTH / 2 - NETWIDTH / 2 - PIKAWIDTH:
                 self.rect.move_ip(HORIZONTAL_SPEED,0)
-    def jump(self):
+
+    def jump(self):#jump using up
         if pygame.key.get_pressed()[K_UP]:
             if self.rect.y >= SCREENHEIGHT - PIKAHEIGHT:
                 self.v = -JUMP_VELOCITY
 
-    def jumpw(self):
+    def jumpw(self):#jump using w
         if pygame.key.get_pressed()[K_w]:
             if self.rect.y >= SCREENHEIGHT - PIKAHEIGHT:
                 self.v = -JUMP_VELOCITY
@@ -57,60 +62,51 @@ class Player(pygame.sprite.Sprite):
     def gravity(self):#down = positive; up = negative
         if self.rect.y < SCREENHEIGHT - PIKAHEIGHT:
             self.v += GRAVITY
-
-        #elif self.rect.y >= SCREENHEIGHT - PIKAHEIGHT and not pygame.key.get_pressed()[K_UP]:
-        #    self.v = 0
-    
-        
+    '''   
     def gravityw(self):#down = positive; up = negative
         if self.rect.y < SCREENHEIGHT - PIKAHEIGHT:
             self.v += GRAVITY
-        #elif self.rect.y >= SCREENHEIGHT - PIKAHEIGHT and not pygame.key.get_pressed()[K_w]:
-        #    self.v = 0
-    
+    '''
     def velocity(self):
-        #if self.rect.y >= SCREENHEIGHT - PIKAHEIGHT and not pygame.key.get_pressed()[K_UP]:
-        #    self.v = 0
         if self.v != 0 or self.rect.x != SCREENHEIGHT - PIKAHEIGHT: #and self.rect.y < SCREENHEIGHT - PIKAHEIGHT :
             self.rect.move_ip( 0 , self.v ) 
             if self.rect.y > SCREENHEIGHT - PIKAHEIGHT:
                 self.rect.y = SCREENHEIGHT - PIKAHEIGHT
 
     def velocityw(self):
-        #if self.rect.y >= SCREENHEIGHT - PIKAHEIGHT and not pygame.key.get_pressed()[K_w]:
-        #    self.v = 0
         if self.v != 0: #and self.rect.y < SCREENHEIGHT - PIKAHEIGHT :
             self.rect.move_ip( 0 , self.v ) 
             if self.rect.y > SCREENHEIGHT - PIKAHEIGHT:
                 self.rect.y = SCREENHEIGHT - PIKAHEIGHT
-    def gravity_ball(self):#down = positive; up = negative
+
+    def gravity_ball(self):#gravity for ball; downward = positive; upward = negative
         if self.rect.y < SCREENHEIGHT - BALLRADIUS:
             self.v += GRAVITY 
+
     def velocity_ball(self):
         if self.v != 0:
             self.rect.move_ip( 0 , self.v ) 
-            if self.rect.y > SCREENHEIGHT - PIKAHEIGHT:
+            if self.rect.y > SCREENHEIGHT - PIKAHEIGHT:#if ball is underground set it on the ground
                 self.rect.y = SCREENHEIGHT - PIKAHEIGHT
+
     def set_position(self,*coordinate):
         self.rect.center = coordinate
+
     def smash_from_left(self,ballbody):
         if pygame.key.get_pressed()[K_z]:
-            if pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(self.rect.x + PIKAWIDTH / 2 , self.rect.y +PIKAHEIGHT / 2)) < BALLRADIUS+30:
+            if pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(
+                    self.rect.x + PIKAWIDTH / 2 ,self.rect.y +PIKAHEIGHT / 2)) < BALLRADIUS+25:
                 shortsmash = True
                 angle = None
                 if pygame.key.get_pressed()[K_d] or pygame.key.get_pressed()[K_a]:
                     shortsmash = False
                     if pygame.key.get_pressed()[K_w]:
                         angle = 45
-                        #smash = True
-                        #print('upright')
+
                     elif pygame.key.get_pressed()[K_s]:
                         angle = 315
-                        #smash = True
-                        #print('downright')
                     else:
                         angle = 0
-                        #print('flat')
                 elif pygame.key.get_pressed()[K_s]:
                     shortsmash = False
                     if not pygame.key.get_pressed()[K_w]:
@@ -123,52 +119,59 @@ class Player(pygame.sprite.Sprite):
                         #print('up')
                 elif shortsmash == True:
                     angle = 0
-                    #print('short')
-                #print(random.randint(1,5))
                 degree_angle = angle * math.pi / 180
-                #print(math.cos(degree_angle))
-                #print(math.sin(degree_angle))
-                #print(random.randint(1,5))
-                ballbody.velocity = pymunk.Vec2d(200+1.03 * ballbody.velocity.__abs__() * math.cos(degree_angle),-1 * ballbody.velocity.__abs__() * math.sin(degree_angle))
+                if shortsmash == True:
+                    pass
+                    #ballbody.velocity = pymunk.Vec2d(200+1.03 * ballbody.velocity.__abs__() * 0.7,0)
+                    #short smash removed                           
+                if shortsmash == False:
+                    ballbody.velocity = pymunk.Vec2d(200+1.1 * ballbody.velocity.__abs__() * math.cos(degree_angle),
+                                                     -1.1 * ballbody.velocity.__abs__() * math.sin(degree_angle))
+                
     def smash_from_right(self,ballbody):
         if pygame.key.get_pressed()[K_RETURN]:
-            if pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(self.rect.x + PIKAWIDTH / 2 , self.rect.y +PIKAHEIGHT / 2)) < BALLRADIUS+30:
+            if pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(self.rect.x + PIKAWIDTH / 2 ,
+                                                                        self.rect.y +PIKAHEIGHT / 2)) < BALLRADIUS+25:
                 shortsmash = True
                 angle = None
                 if pygame.key.get_pressed()[K_LEFT] or pygame.key.get_pressed()[K_RIGHT]:
                     shortsmash = False
                     if pygame.key.get_pressed()[K_UP]:
                         angle = 135
-                        #smash = True
-                        #print('upright')
+
                     elif pygame.key.get_pressed()[K_DOWN]:
                         angle = 225
-                        #smash = True
-                        #print('downright')
+
                     else:
                         angle = 180
-                        #print('flat')
+
                 elif pygame.key.get_pressed()[K_DOWN]:
                     shortsmash = False
                     if not pygame.key.get_pressed()[K_UP]:
                         angle = 270
-                        #print('down')
+
                 elif pygame.key.get_pressed()[K_UP]:
                     shortsmash = False
                     if not pygame.key.get_pressed()[K_DOWN]:
                         angle = 90
-                        #print('up')
+
                 elif shortsmash == True:
                     angle = 180
-                    #print('short')
-                #print(random.randint(1,5))
                 degree_angle = angle * math.pi / 180
-                #print(math.cos(degree_angle))
-                #print(math.sin(degree_angle))
-                #print(random.randint(1,5))
-                ballbody.velocity = pymunk.Vec2d(-200+1.03 * ballbody.velocity.__abs__() * math.cos(degree_angle),-1 * ballbody.velocity.__abs__() * math.sin(degree_angle))
-                
-pymunk.CollisionHandler
+                if shortsmash == True:
+                    pass
+                    #ballbody.velocity = pymunk.Vec2d(-200+1.03 * ballbody.velocity.__abs__() * 0.7,0)
+                    #shortsmash removed
+                if shortsmash == False:
+                    ballbody.velocity = pymunk.Vec2d(-200+1.1 * ballbody.velocity.__abs__() * math.cos(degree_angle),
+                                                     -1.1 * ballbody.velocity.__abs__() * math.sin(degree_angle))
+def ball_velocity_limit(maxv,ballbody):
+    if ballbody.velocity.__abs__() > maxv:
+        ballbody.velocity = pymunk.Vec2d(ballbody.velocity.x/ballbody.velocity.__abs__()*maxv,
+                                         ballbody.velocity.y/ballbody.velocity.__abs__()*maxv)
+
+MINBALLENERGY = -150000
+MAXBALLVELOCITY = 1400
 JUMP_VELOCITY = 12
 HORIZONTAL_SPEED = 5
 GRAVITY = 0.15
@@ -183,7 +186,6 @@ BALLRADIUS = 120
 scoreboard = [0,0]
 
 def main():
-    
     def ball_spawn_left():
         ball_body.position = ( 60 , 60 )
         ball_body.velocity = (0,0)
@@ -192,6 +194,7 @@ def main():
     def ball_spawn_right():
         ball_body.position = ( SCREENWIDTH - 60 , 60 )
         ball_body.velocity = (0,0)
+
 
 
 
@@ -213,6 +216,13 @@ def main():
                 player_left.v = 0
                 player_right.v = 0
             time.sleep(0.3)
+    def ball_energy_limit(mine,ballbody):
+        if 0.5*ballbody.velocity.__abs__()**2-800*ballbody.position.y < mine \
+                and pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(player_right.rect.x + PIKAWIDTH / 2 , player_right.rect.y +PIKAHEIGHT / 2)) > BALLRADIUS+10 \
+                and pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(player_left.rect.x + PIKAWIDTH / 2 , player_left.rect.y +PIKAHEIGHT / 2)) > BALLRADIUS+10:
+            ballbody.velocity = pymunk.Vec2d(ballbody.velocity.x/ballbody.velocity.__abs__()*math.sqrt(2*(mine+800*ballbody.position.y)),
+                                             ballbody.velocity.y/ballbody.velocity.__abs__()*math.sqrt(2*(mine+800*ballbody.position.y)))                                        
+            #print('lime',random.randint(1,9))
     pygame.init()
     FPS = 130
     framespersec = pygame.time.Clock()
@@ -224,24 +234,26 @@ def main():
 
     space = pymunk.Space()
     space.gravity = 0, 800
-    #attach a segment to pika as hitbox
+    
     pts = [(-100,-100),(1350,-100),(1350,850),(-100,850)]
     segment = pymunk.Segment(space.static_body,(SCREENWIDTH / 2 ,(SCREENHEIGHT - NETHEIGHT)*1.03),(SCREENWIDTH / 2 , SCREENHEIGHT), NETWIDTH / 2)#網子
     segment.elasticity = 1
     segment.color = (0,0,0,0)
-    for i in range(4):
+    for i in range(4):#create a box 
         seg = pymunk.Segment(space.static_body, pts[i], pts[(i+1)%4], 100)
         seg.elasticity = 1
-        seg.color = (0,0,0,0)#(kine)metic body type is used for pika
+        seg.color = (0,0,0,0)
         space.add(seg)
-    right_pika_hit_box_body = pymunk.Body(body_type = 1)
-    right_pika_hit_box = pymunk.Segment(right_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 , SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
-    right_pika_hit_box.elasticity = 0.9
+    right_pika_hit_box_body = pymunk.Body(body_type = 1)#attach a segment to pika as hitbox
+    right_pika_hit_box = pymunk.Segment(right_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 ,
+                                        SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
+    right_pika_hit_box.elasticity = 0.8#kinemetic body type is used for pika(body_type = 1)
     right_pika_hit_box.color = (0,0,0,256)
     
     left_pika_hit_box_body = pymunk.Body(body_type = 1)
-    left_pika_hit_box = pymunk.Segment(left_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 , SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
-    left_pika_hit_box.elasticity = 0.9
+    left_pika_hit_box = pymunk.Segment(left_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 ,
+                                       SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
+    left_pika_hit_box.elasticity = 0.8
     left_pika_hit_box.color = (0,0,0,256)
 
     ball_body = pymunk.Body(mass = 10000,moment = 0.0000001)
@@ -284,7 +296,6 @@ def main():
     player_left.add_image('leftpika.png')
     player_right.add_image('rightpika.png')
 
-    #player_left.rect.move_ip((100,100))
 
     while running:
         for event in pygame.event.get():
@@ -306,7 +317,7 @@ def main():
         #ball.velocity_ball()
         if player_left.v != 0 or pygame.key.get_pressed()[K_w] or player_left.rect.y < SCREENHEIGHT - PIKAHEIGHT:
             player_left.jumpw()
-            player_left.gravityw()
+            player_left.gravity()
             player_left.velocityw()
         if player_right.v != 0 or pygame.key.get_pressed()[K_UP] or player_right.rect.y < SCREENHEIGHT - PIKAHEIGHT:
             player_right.jump()
@@ -336,21 +347,23 @@ def main():
         player_left.smash_from_left(ball_body)
         player_right.smash_from_right(ball_body)
 
-        #print(pymunk.Vec2d.get_distance(ball_body.position,pymunk.Vec2d(player_left.rect.x + PIKAWIDTH / 2,player_left.rect.y +PIKAHEIGHT / 2)))
+        ball_velocity_limit(MAXBALLVELOCITY,ball_body)
+        ball_energy_limit(MINBALLENERGY,ball_body)
 
+        #score_point()
 
-        score_point()
+        #print(ball_body.position[0],ball_body.position[1])
+        #print(0.5*ball_body.velocity.__abs__()**2-800*ball_body.position.y)
 
-        # print(ball_body.position[0],ball_body.position[1])
-        
         ball.draw(screen)
         pygame.display.update()
         space.step(0.01)
         framespersec.tick(FPS)
-    print(scoreboard)
+    #print(scoreboard)
     pygame.quit()
     sys.exit()   
     
     
 if __name__ == '__main__':
+    os.chdir(os.path.dirname(sys.argv[0]))#change working directory
     main()
