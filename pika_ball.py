@@ -129,7 +129,8 @@ class Player(pygame.sprite.Sprite):
                 
     def smash_from_right(self,ballbody):
         if pygame.key.get_pressed()[K_RETURN]:
-            if pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(self.rect.x + PIKAWIDTH / 2 , self.rect.y +PIKAHEIGHT / 2)) < BALLRADIUS+30:
+            if pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(self.rect.x + PIKAWIDTH / 2 ,
+                                                                        self.rect.y +PIKAHEIGHT / 2)) < BALLRADIUS+30:
                 shortsmash = True
                 angle = None
                 if pygame.key.get_pressed()[K_LEFT] or pygame.key.get_pressed()[K_RIGHT]:
@@ -214,7 +215,9 @@ def main():
                 player_right.v = 0
             time.sleep(0.3)
     def ball_energy_limit(mine,ballbody):
-        if 0.5*ballbody.velocity.__abs__()**2-800*ballbody.position.y < mine and pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(player_right.rect.x + PIKAWIDTH / 2 , player_right.rect.y +PIKAHEIGHT / 2)) > BALLRADIUS+30 and pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(player_left.rect.x + PIKAWIDTH / 2 , player_left.rect.y +PIKAHEIGHT / 2)) > BALLRADIUS+30:
+        if 0.5*ballbody.velocity.__abs__()**2-800*ballbody.position.y < mine \
+                and pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(player_right.rect.x + PIKAWIDTH / 2 , player_right.rect.y +PIKAHEIGHT / 2)) > BALLRADIUS+30 \
+                and pymunk.Vec2d.get_distance(ballbody.position,pymunk.Vec2d(player_left.rect.x + PIKAWIDTH / 2 , player_left.rect.y +PIKAHEIGHT / 2)) > BALLRADIUS+30:
             ballbody.velocity = pymunk.Vec2d(ballbody.velocity.x/ballbody.velocity.__abs__()*math.sqrt(2*(mine+800*ballbody.position.y)),
                                              ballbody.velocity.y/ballbody.velocity.__abs__()*math.sqrt(2*(mine+800*ballbody.position.y)))                                        
             #print('lime',random.randint(1,9))
@@ -240,12 +243,14 @@ def main():
         seg.color = (0,0,0,0)
         space.add(seg)
     right_pika_hit_box_body = pymunk.Body(body_type = 1)#attach a segment to pika as hitbox
-    right_pika_hit_box = pymunk.Segment(right_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 , SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
+    right_pika_hit_box = pymunk.Segment(right_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 ,
+                                        SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
     right_pika_hit_box.elasticity = 0.9#kinemetic body type is used for pika(body_type = 1)
     right_pika_hit_box.color = (0,0,0,256)
     
     left_pika_hit_box_body = pymunk.Body(body_type = 1)
-    left_pika_hit_box = pymunk.Segment(left_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 , SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
+    left_pika_hit_box = pymunk.Segment(left_pika_hit_box_body,(SCREENWIDTH - PIKAWIDTH / 2 ,
+                                       SCREENHEIGHT - PIKAWIDTH / 2.6),(SCREENWIDTH - PIKAWIDTH / 2, SCREENHEIGHT*1.1 - PIKAHEIGHT*1.1),PIKAWIDTH / 2.6)
     left_pika_hit_box.elasticity = 0.9
     left_pika_hit_box.color = (0,0,0,256)
 
@@ -342,9 +347,6 @@ def main():
 
         ball_velocity_limit(MAXBALLVELOCITY,ball_body)
         ball_energy_limit(MINBALLENERGY,ball_body)
-
-        #print(pymunk.Vec2d.get_distance(ball_body.position,pymunk.Vec2d(player_left.rect.x + PIKAWIDTH / 2,player_left.rect.y +PIKAHEIGHT / 2)))
-
 
         score_point()
 
