@@ -350,7 +350,7 @@ def main():
         ball_velocity_limit(MAXBALLVELOCITY,ball_body)
         ball_energy_limit(MINBALLENERGY,ball_body)
 
-        #score_point()
+        score_point()
 
         #print(ball_body.position[0],ball_body.position[1])
         #print(0.5*ball_body.velocity.__abs__()**2-800*ball_body.position.y)
