@@ -299,7 +299,7 @@ def main():
     bg_image = pygame.image.load('pictures/bg.jpeg').convert()
     bg_image = pygame.transform.scale(bg_image,(SCREENWIDTH,SCREENHEIGHT))
 
-    net = pygame.image.load('pictuers/net.jpeg').convert()
+    net = pygame.image.load('pictures/net.jpeg').convert()
     net = pygame.transform.scale(net,(NETWIDTH,NETHEIGHT))
 
     screen.blit(bg_image,(0,0))
