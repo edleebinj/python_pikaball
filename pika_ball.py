@@ -296,10 +296,10 @@ def main():
     font = pygame.font.Font(None, 30)
     score_font = pygame.font.Font(None, 100)
 
-    bg_image = pygame.image.load('bg.jpeg').convert()
+    bg_image = pygame.image.load('pictures/bg.jpeg').convert()
     bg_image = pygame.transform.scale(bg_image,(SCREENWIDTH,SCREENHEIGHT))
 
-    net = pygame.image.load('net.jpeg').convert()
+    net = pygame.image.load('pictuers/net.jpeg').convert()
     net = pygame.transform.scale(net,(NETWIDTH,NETHEIGHT))
 
     screen.blit(bg_image,(0,0))
@@ -310,7 +310,7 @@ def main():
     ball = Player()
     ball.setsurf(BALLRADIUS,BALLRADIUS)
     ball.setrect((SCREENWIDTH / 2,0))
-    ball.add_image_ball('ball.png')
+    ball.add_image_ball('pictures/ball.png')
     
     player_left = Player()
     player_right = Player()
@@ -322,8 +322,8 @@ def main():
     player_right.setrect((SCREENWIDTH - PIKAWIDTH / 2 ,\
         SCREENHEIGHT - PIKAHEIGHT / 2))
 
-    player_left.add_image('leftpika.png')
-    player_right.add_image('rightpika.png')
+    player_left.add_image('pictures/leftpika.png')
+    player_right.add_image('pictures/rightpika.png')
 
     while running:
         for event in pygame.event.get():
